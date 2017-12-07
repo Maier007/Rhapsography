@@ -4,7 +4,8 @@ def rgbString(red, green, blue):
     return "#%02x%02x%02x" % (red, green, blue)
 
 lightGrey = rgbString(216, 216, 216)
-greys = [rgbString(230, 230, 230), rgbString(250, 250, 250), rgbString(190, 190, 190), rgbString(160, 160, 160), rgbString(216, 216, 216)]
+greys = [rgbString(230, 230, 230), rgbString(250, 250, 250), rgbString(190, 190, 190), \
+        rgbString(160, 160, 160), rgbString(216, 216, 216)]
 textGrey = rgbString(100, 100, 100)
 playGrey = rgbString(50, 50, 50)
 buttonStartBlue = rgbString(200, 200, 255)

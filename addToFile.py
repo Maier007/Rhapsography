@@ -1,12 +1,16 @@
-def readFile(path):
+#functions to updata musicdata1 file with new information
+
+#read and write file from 15112 website
+
+def readFile(path): #reads file
     with open(path, "rt") as f:
         return f.read()
 
-def writeFile(path, contents):
+def writeFile(path, contents):  #updates file
     with open(path, "wt") as f:
         f.write(contents)
 
-def addToFile(path, contents):
+def addToFile(path, contents): #reads and writes the file
     fullText = readFile(path)
     fullText += contents
     writeFile(path, fullText)

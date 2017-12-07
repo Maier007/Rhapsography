@@ -1,3 +1,5 @@
+#functions to place camera frames into tkinter
+
 from tkinter import *
 import time
 import sys
@@ -9,6 +11,8 @@ import collections
 import coloredlogs
 import logging
 
+##below adapted mostly from opencv documentation to show video and detect and 
+##show detections of smile/face/eyes
 def opencvToTk(frame):
     """Convert an opencv image to a tkinter image, to display in canvas."""
     rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -26,6 +30,8 @@ def opencvToTk(frame):
     # img = cv2.imread('face1.jpg')
     gray = cv2.cvtColor(rgb_image, cv2.COLOR_BGR2GRAY)
 
+    #below, the format of code taken from 
+    #https://github.com/VasuAgrawal/112-opencv-tutorial
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
     for (x,y,w,h) in faces:
         rgb_image = cv2.rectangle(rgb_image,(x,y),(x+w,y+h),(255,0,0),2)

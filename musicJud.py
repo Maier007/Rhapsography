@@ -1,3 +1,5 @@
+#judges music
+
 from musicGen import *
 import musicData1 #data stored in here
 
@@ -60,7 +62,7 @@ def judgeMusic(startLet, majorBool, chordProg, melodyRhyth, melodyPitches): #ret
     #format judged data
     judgeThis = []
     melodyContour = getMelodyContour(startLet, melodyPitches, majorBool)
-    print(melodyContour)
+    # print(melodyContour)
     judgeThis.append(len(melodyPitches))
     #gets percentage count of jumps 0 - 6, in absolute value
     for i in range(7):
@@ -70,7 +72,7 @@ def judgeMusic(startLet, majorBool, chordProg, melodyRhyth, melodyPitches): #ret
                 count += 1
         judgeThis.append(count * 100 / len(melodyPitches))
     
-    print(judgeThis)
+    # print(judgeThis)
     my_classifier = myClassifier() #uses written classifier above (creates an instance to judge with)
     my_classifier.fit(xData, yData)
     prediction = my_classifier.predict(judgeThis)

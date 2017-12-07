@@ -1,3 +1,5 @@
+#screen for mood detection
+
 import time
 import sys
 from tkinter import *
@@ -35,22 +37,24 @@ def dataScreenMoodDet(data):
 
 #event handling
 def mouseScreenMoodDet(event, data):
-    #handle back button recycled from mood select
     butSX, butSY, butEX, butEY = getButCoords(data.moodSelBackButnX, data.moodSelBackButnY, 
                                     data.moodSelBackButnW//2, data.moodSelBackButnH//2)
-    if event.x > butSX and event.x < butEX and event.y > butSY and event.y < butEY:
-        data.state = 0
-        data.camera = None
-    
-    #handle camera button
     distX = event.x - data.camButtonX
     distY = event.y - data.camButtonY
     totalDist = distX**2 + distY**2
-    if totalDist**(.5) < data.camButtonRad:
+    #handle back button recycled from mood select
+    if event.x > butSX and event.x < butEX and event.y > butSY and event.y < butEY:
+        data.state = 0
+        data.camera = None
+        playRandomNote()
+        play_music('pitch.mid', 1)
+    
+    #handle camera button
+    elif totalDist < data.camButtonRad**2:
         #take a picture
         newImage = data.frame
         cv2.imwrite("test.png", newImage)
-        #reset and remeasure detectmood then change data.mood
+        #reset and remeasure detect mood then change data.mood
         detectedMood = None
         detectedMood = detectMood(data, newImage)
         #change state and mood and generate music
@@ -59,36 +63,35 @@ def mouseScreenMoodDet(event, data):
             ctypes.windll.user32.MessageBoxW(0, errorText, "Error!", 1)
             data.state = 0
             data.camera = None
-        else:
+        else: #mood successfully detected
             data.mood = detectedMood
             data.state = 2
             data.answered = 0
             data.playing = 1
             data.camera = None
-        if data.state == 2:
             data.startLet, data.majorBool, data.chordProg, data.melodyRhyth, data.melodyPitches = generateNewMusic(data.mood)
             while judgeMusic(data.startLet, data.majorBool, data.chordProg, data.melodyRhyth, data.melodyPitches) != data.mood:
                 data.startLet, data.majorBool, data.chordProg, data.melodyRhyth, data.melodyPitches = generateNewMusic(data.mood)
-            play_music('output.mid')
-            data.playing = 1
+            play_music('output.mid', 100000)
+    
+    #clicked not on a button
     else:
-        data.camera = None
-        data.timer = 0
-        camera = cv2.VideoCapture(data.camera_index)
-        data.camera = camera
+        errorText = """Please click on a button!"""
+        ctypes.windll.user32.MessageBoxW(0, errorText, "Error!", 1)
         data.state = 0
-        data.state = 3
+        data.camera = None
+        
 
 def drawCameraButtons(canvas, data):
     #draw back button
     SX, SY, EX, EY = getButCoords(data.moodSelBackButnX, data.moodSelBackButnY, 
                                     data.moodSelBackButnW//2, data.moodSelBackButnH//2)
     canvas.create_rectangle(SX, SY, EX, EY, 
-                            fill = colors.lightGrey, width = 0)
+                            fill = colors.buttonStartBlack, width = 0)
     canvas.create_text(data.moodSelBackButnX, data.moodSelBackButnY, 
-                    text = "BACK", fill = colors.textGrey, font = "Helvetica 15")
+                    text = "back", fill = colors.greys[2], font = "system 20")
     
     #draw camera button
     SX, SY, EX, EY = getButCoords(data.camButtonX, data.camButtonY, data.camButtonRad, data.camButtonRad)
     canvas.create_oval(SX, SY, EX, EY, 
-                        fill = colors.lightGrey, width = 2)
+                        fill = "black", width = 0)

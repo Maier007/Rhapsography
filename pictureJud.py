@@ -1,3 +1,5 @@
+#judges a picture that is taken and stored
+
 import numpy as np
 import cv2
 import random
@@ -10,13 +12,14 @@ def detectMood(data, imageInfo):
     eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
     smile_cascade = cv2.CascadeClassifier('haarcascade_smile.xml')
     
+    #picture stored in test.png
     img = cv2.imread('test.png')
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
     
     if len(faces) != 1:  #make sure only one face detected
-        print("toomanyfaces")
+        # print("toomanyfaces")
         return None
         
     x = faces[0][0]
@@ -39,29 +42,34 @@ def detectMood(data, imageInfo):
         smileImageColor = roi_color[sy:sy+sh, sx:sx+sw]
         # cv2.imshow('img',smileImageColor)
         
+        #boundary of teeth color
         lower = np.array([150, 150, 150], dtype = "uint8")
         upper = np.array([255, 255, 255], dtype = "uint8")
         
         mask = cv2.inRange(smileImageColor, lower, upper)
         
-        cv2.imshow('mask',mask)
+        # cv2.imshow('mask',mask)
         # cv2.imshow('image', smileImageColor)
         output = cv2.bitwise_and(smileImageColor, smileImageColor, mask = mask)
         # cv2.imshow("images", np.hstack([smileImageColor, output]))
         
         #if there is white, it is a chance of happiness or peacefulness.  
         if np.any(mask):
-            print("teeth might be detected")
+            # print("teeth might be detected")
             guess = random.randint(0, 10)
-            if guess < 7.5:
+            if guess < 8:
                 return 0
-                print("happiness guessed")
+                # print("happiness guessed")
             else:
                 return 3
-                print("peace guessed")
+                # print("peace guessed")
         else:
-            return 3
-            print("peace detected")
+            # print("teeth not detected")
+            guess = random.randint(0, 10)
+            if guess < 8:
+                return 3
+            else:
+                return 0
         
     #uses gray face to find eyes
     eyes = eye_cascade.detectMultiScale(roi_gray)
@@ -74,8 +82,8 @@ def detectMood(data, imageInfo):
     avgEyeDist = ey/2
     totalEyeDistFromTop = avgEyeDist + y + eh//2
     if totalEyeDistFromTop > data.height//2:
-        print("Sadness detected")
+        # print("Sadness detected")
         return 1
     else:
-        print("Powerfulness detected")
+        # print("Powerfulness detected")
         return 2

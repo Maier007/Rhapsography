@@ -1,7 +1,22 @@
+#functions to create music and play
+
 from EasyMIDI import EasyMIDI,Track,Note,Chord,RomanChord
 import pygame
 import random
 import copy
+
+##plays random note for random buttons
+def playRandomNote():
+    newPitch = EasyMIDI()
+    note = Track("acoustic grand piano")
+    
+    notes = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+    i = random.randint(0, 6)
+    singleNote = Note(notes[i], octave = 5, duration = 1, volume = 90)
+    note.addNotes([singleNote])
+    
+    newPitch.addTrack(note)
+    newPitch.writeMIDI('pitch.mid')
 
 ##reformats information
 def getChordProgression(chords):
@@ -178,7 +193,7 @@ def generateNewMusic(MOOD):
     return notes[baseNote], majMin, chordProgression, melodyRhyth, pitches
 
  ## ADAPTED FROM https://www.daniweb.com/programming/software-development/code/216976/play-a-midi-music-file-using-pygame
-def play_music(music_file):
+def play_music(music_file, times):
     clock = pygame.time.Clock()
     freq = 44100    # audio CD quality
     bitsize = -16   # unsigned 16 bit
@@ -192,4 +207,4 @@ def play_music(music_file):
         print ("File %s not found! (%s)" % (music_file, pygame.get_error()))
         return
     playing = True
-    pygame.mixer.music.play(10000)
+    pygame.mixer.music.play(times)

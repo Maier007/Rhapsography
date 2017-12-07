@@ -1,3 +1,5 @@
+#run this file to start program
+
 from tkinter import *
 import time
 import sys
@@ -42,24 +44,23 @@ def init(data):
 
 def mousePressed(event, data):
     #backwards because mode switches cause the event to change
-
-    if data.state == 2: #music screen
+    if data.state == 3: #mood detection camera screen
+        mouseScreenMoodDet(event, data)
+    elif data.state == 2: #music screen
         mouseScreenPlay(event, data)
     elif data.state == 1: #mood selection screen
         mouseScreenMoodSel(event, data)
     elif data.state == 0: #start screen
         mouseScreenStart(event, data)
-    elif data.state == 3: #mood detection camera screen
-        mouseScreenMoodDet(event, data)
 
 def keyPressed(event, data):
-    # use event.char and event.keysym
     pass
 
 def timerFired(data):
     pass
 
-def drawBackground(canvas, data): #random squares drawn as timer fired
+def drawBackground(canvas, data): #random squares/triangles/ovals drawn as timer fired
+    #pick color array
     if data.mood == -1:
         list = colors.greys
     elif data.mood == 0:
@@ -70,12 +71,28 @@ def drawBackground(canvas, data): #random squares drawn as timer fired
         list = colors.colsPow
     else:
         list = colors.colsPea
-    for i in range (1, 20):
+    for i in range (1, 20): #random shapes
         color = list[random.randint(0,3)]
-        canvas.create_rectangle(random.randint(0, data.width),
-                                random.randint(0, data.height),
-                                random.randint(0, data.width),
-                                random.randint(0, data.height),
+        chooseShape = random.randint(0, 2)
+        if chooseShape == 0:
+            canvas.create_oval(random.randint(-data.width//5, data.width*6//5),
+                                random.randint(-data.height//5, data.height*6//5),
+                                random.randint(-data.width//5, data.width*6//5),
+                                random.randint(-data.height//5, data.height*6//5),
+                                fill = color, width = 0)
+        elif chooseShape == 1:
+            canvas.create_polygon(random.randint(-data.width//5, data.width*6//5), 
+                              random.randint(-data.height//5, data.height*6//5), 
+                              random.randint(-data.width//5, data.width*6//5), 
+                              random.randint(-data.height//5, data.height*6//5), 
+                              random.randint(-data.width//5, data.width*6//5), 
+                              random.randint(-data.height//5, data.height*6//5), 
+                              fill = color, width = 0)
+        else: 
+            canvas.create_rectangle(random.randint(-data.width//5, data.width*6//5),
+                                random.randint(-data.height//5, data.height*6//5),
+                                random.randint(-data.width//5, data.width*6//5),
+                                random.randint(-data.height//5, data.height*6//5),
                                 fill = color, width = 0)
 
 def redrawAll(canvas, data):
@@ -99,7 +116,7 @@ def redrawAll(canvas, data):
 def run(width=640, height=475):
     def redrawAllWrapper(canvas, data):
         if data.state == 3:
-            #BELOW ADAPTED FROM CV DOCUMENTATION
+            #BELOW IF STATEMENT ADAPTED FROM CV DOCUMENTATION
 
             start = time.time()
 
